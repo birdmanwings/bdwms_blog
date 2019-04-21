@@ -1,0 +1,2 @@
+FLASK_APP=bdwms_blog
+FLASK_ENV=development
