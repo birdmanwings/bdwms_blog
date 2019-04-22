@@ -28,6 +28,14 @@ class Category(db.Model):
 
     posts = db.relationship('Post', back_populates='category')  # 定义关系属性,back_populates定义反向引用，用于建立双向关系
 
+    def delete(self):
+        default_category = Category.query.get(1)  # 获取默认目录
+        posts = self.posts[:]  # 获取目录下的所有文章
+        for post in posts:  # 更改为默认目录
+            post.category = default_category
+        db.session.delete(self)
+        db.session.commit()
+
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)

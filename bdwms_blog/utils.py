@@ -1,5 +1,6 @@
 """辅助函数"""
 
+"""检测是Python2还是Python3从而调用相应的库"""
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
@@ -27,4 +28,4 @@ def redirect_back(default='blog.index', **kwargs):
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in current_app.config['bdwms_blog_ALLOWED_IMAGE_EXTENSIONS']
+           filename.rsplit('.', 1)[1].lower() in current_app.config['BDWMS_BLOG_ALLOWED_IMAGE_EXTENSIONS']

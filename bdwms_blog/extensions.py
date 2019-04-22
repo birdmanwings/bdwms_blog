@@ -21,6 +21,7 @@ def load_user(user_id):
     return user
 
 
+"""设置未登录时导向的页面，和返回信息的种类"""
 login_manager.login_view = 'auth.login'
 # login_manager.login_message = 'Your custom message'
 login_manager.login_message_category = 'warning'

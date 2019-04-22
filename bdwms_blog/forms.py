@@ -19,7 +19,7 @@ class PostForm(FlaskForm):
     """文章表单"""
     title = StringField('Title', validators=[DataRequired(), Length(1, 60)])
     category = SelectField('Category', coerce=int, default=1)
-    body = CKEditorField('Body', validators=[DataRequired()])
+    body = CKEditorField('Body', validators=[DataRequired()])  # 使用CKEditorField这个类来加载
     submit = SubmitField()
 
     def __init__(self, *args, **kwargs):
@@ -52,4 +52,3 @@ class LinkForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     url = StringField('URL', validators=[DataRequired(), URL(), Length(1, 255)])
     submit = SubmitField()
-

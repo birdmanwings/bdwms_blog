@@ -23,4 +23,3 @@ flask-debugtoolbar = "*"
 gunicorn = "*"
 "psycopg2" = "*"
 flask-migrate = "*"
-

@@ -1,18 +1,17 @@
 import os
-import click
 
-from flask import Flask, render_template, request
-from flask_login import current_user
+import click
+from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
 
-from bdwms_blog.settings import config
-from bdwms_blog.extensions import bootstrap, db, csrf, moment, login_manager, ckeditor
-
-from bdwms_blog.models import Admin, Category, Link
-
-from bdwms_blog.blueprints.admin import admin_bp  # 导入蓝图
+from bdwms_blog.blueprints.admin import admin_bp
 from bdwms_blog.blueprints.auth import auth_bp
 from bdwms_blog.blueprints.blog import blog_bp
+from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment
+from bdwms_blog.models import Admin, Post, Category, Link
+from bdwms_blog.settings import config
+
+# from flask_login import current_user 评论相关，未实现
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -29,13 +28,14 @@ def create_app(config_name=None):
     register_template_context(app)
     register_errors(app)
     register_commands(app)
+    register_shell_context(app)
     return app
 
 
 def register_blueprints(app):
     app.register_blueprint(blog_bp)
-    app.register_blueprint(auth_bp, url_prefix='/auth')  # 设置前缀
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(auth_bp, url_prefix='/auth')  # 设置前缀
 
 
 def register_extensions(app):  # 分离拓展的实例化与初始化，因为当实例化放在工厂函数中时，就没有全局的拓展对象
@@ -58,6 +58,12 @@ def register_template_context(app):  # 添加模板上下文,这里没写完评�
             links=links)
 
 
+def register_shell_context(app):  # 注册shell上下文处理函数
+    @app.shell_context_processor
+    def make_shell_context():
+        return dict(db=db, Admin=Admin, Post=Post, Category=Category)
+
+
 def register_commands(app):
     @app.cli.command()
     @click.option('--username', prompt=True, help='The username used to login')
@@ -70,9 +76,18 @@ def register_commands(app):
 
         admin = Admin.query.first()
         if admin is not None:
-            click.echo('管理员已经存在，更新数据中')
-            admin = Admin(username=username, blog_title='bdwmsblog', blog_sub_title='you are good', name='Admin',
-                          about='Anything about you')
+            click.echo('管理员已存在，更新数据中...')
+            admin.username = username
+            admin.set_password(password)
+        else:
+            click.echo('创建管理员账号')
+            admin = Admin(
+                username=username,
+                blog_title='bdwmsblog',
+                blog_sub_title="you are good",
+                name='Admin',
+                about='Anything about you.'
+            )
             admin.set_password(password)
             db.session.add(admin)
 
@@ -84,6 +99,17 @@ def register_commands(app):
 
         db.session.commit()
         click.echo('完成')
+
+    @app.cli.command()
+    @click.option('--drop', is_flag=True, help='Create after drop.')
+    def initdb(drop):
+        """初始化数据库"""
+        if drop:
+            click.confirm('This operation will delete the database, do you want to continue?', abort=True)
+            db.drop_all()
+            click.echo('Drop tables.')
+        db.create_all()
+        click.echo('Initialized database.')
 
 
 def register_errors(app):
@@ -99,6 +125,6 @@ def register_errors(app):
     def internal_server_error(e):
         return render_template('errors/500.html'), 500
 
-    @app.errorhandler(CSRFError)
+    @app.errorhandler(CSRFError)  # 自定义csrf错误响应
     def handle_csrf_error(e):
         return render_template('errors/400.html', description=e.description), 400
