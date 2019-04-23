@@ -83,10 +83,10 @@ def register_commands(app):
             click.echo('创建管理员账号')
             admin = Admin(
                 username=username,
-                blog_title='bdwmsblog',
-                blog_sub_title="you are good",
+                blog_title='BDWMS',
+                blog_sub_title="未来有一个人在等待",
                 name='Admin',
-                about='Anything about you.'
+                about='一个普通人'
             )
             admin.set_password(password)
             db.session.add(admin)

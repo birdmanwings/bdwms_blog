@@ -25,7 +25,7 @@ class BaseConfig(object):
     CKEDITOR_ENABLE_CSRF = True
     CKEDITOR_FILE_UPLOADER = 'admin.upload_image'  # 设置ckeditor文件上传的方法
 
-    '''邮箱设定（暂时无）
+    '''邮箱设定（暂时无）w
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = 465
     MAIL_USE_SSL = True
@@ -39,7 +39,7 @@ class BaseConfig(object):
     BDWMS_BLOG_MANAGE_POST_PER_PAGE = 15
     BDWMS_BLOG_COMMENT_PER_PAGE = 15  # 评论数目
     # ('theme name', 'display name')
-    BDWMS_BLOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
+    BDWMS_BLOG_THEMES = {'white': 'White', 'black': 'Black'}
     BDWMS_BLOG_SLOW_QUERY_THRESHOLD = 1
 
     BDWMS_BLOG_UPLOAD_PATH = os.path.join(basedir, 'uploads')

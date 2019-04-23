@@ -22,7 +22,7 @@ def settings():
     if form.validate_on_submit():
         current_user.name = form.name.data
         current_user.blog_title = form.blog_title.data
-        current_user.blog_sub_title = form.blog_sub_title
+        current_user.blog_sub_title = form.blog_sub_title.data
         current_user.about = form.about.data
         db.session.commit()
         flash('设置更新成功', 'success')
