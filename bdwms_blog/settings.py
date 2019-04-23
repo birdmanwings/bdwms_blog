@@ -12,6 +12,7 @@ else:
 
 
 class BaseConfig(object):
+    '''注意配置文件必须大写！！！！！！！'''
     SECRET_KEY = os.getenv('SECRET_KEEY', 'dev key')
 
     DEBUG_TB_INTERCEPT_REDIRECTS = False

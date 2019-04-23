@@ -48,12 +48,13 @@ def manage_post():
 @admin_bp.route('/post/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
-    form = PostForm
+    form = PostForm()
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
         category = Category.query.get(form.category.data)  # 查询出具体对象后赋值给关系属性
         post = Post(title=title, body=body, category=category)  # 利用Post类的category关系属性来建立关系
+
         db.session.add(post)
         db.session.commit()
         flash('文章已创建', 'success')
