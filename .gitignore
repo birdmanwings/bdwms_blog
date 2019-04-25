@@ -114,3 +114,4 @@ out
 gen
 将删除 bdwms_blog/templates/admin/manage_comment.html
 将删除 data-dev.db
+.idea
