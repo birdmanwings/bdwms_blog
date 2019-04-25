@@ -5,7 +5,7 @@
 $ git clone https://github.com/birdmanwings/bdwms_blog.git
 $ cd bdwms_blog
 $ pipenv install --dev 安装依赖
-$ flask initdb 初始化数据库
+$ flask initdb --drop 初始化数据库
 $ flask init 初始化管理员账户及密码
 * Username:
 * Password:
