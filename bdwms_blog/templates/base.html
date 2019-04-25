@@ -47,10 +47,19 @@
                                aria-haspopup="true"
                                aria-expanded="false">
                                 Manage <span class="caret"></span>
+                                {% if unread_comments %}
+                                    <span class="badge badge-success">new</span>
+                                {% endif %}
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{ url_for('admin.manage_post') }}">Post</a>
                                 <a class="dropdown-item" href="{{ url_for('admin.manage_category') }}">Category</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_comment') }}">
+                                    Comment
+                                    {% if unread_comments %}
+                                        <span class="badge badge-success">{{ unread_comments }}</span>
+                                    {% endif %}
+                                </a>
                                 <a class="dropdown-item" href="{{ url_for('admin.manage_link') }}">Link</a>
                             </div>
                         </li>
@@ -73,8 +82,8 @@
     {% block footer %}
         <footer>
             <p class="float-left">
-                <small> &copy; 2019 <a href="https://www.bdwms.com" >bdwms</a> -
-                    <a href="https://github.com/birdmanwings/bdwms_blog" title="Fork me on GitHub">GitHub</a> -
+                <small> &copy; 2019 <a href="https://www.bdwms.com" title="Written by BDWMS">bdwms</a> -
+                    <a href="https://github.com/birdmanwings" title="Fork me on GitHub">GitHub</a>
                 </small>
             </p>
             <p class="float-right">

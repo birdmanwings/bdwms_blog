@@ -23,18 +23,17 @@ class BaseConfig(object):
 
     # 设置ckeditor
     CKEDITOR_ENABLE_CSRF = True
-    CKEDITOR_FILE_UPLOADER = 'admin.upload_image'  # 设置ckeditor文件上传的方法
+    CKEDITOR_FILE_UPLOADER = 'admin.upload_image'  # 设置ckeditor图片文件上传的方法
 
-    '''邮箱设定（暂时无）w
+    # 设置邮箱
     MAIL_SERVER = os.getenv('MAIL_SERVER')
     MAIL_PORT = 465
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = ('bdwms_blog Admin', MAIL_USERNAME)
-    '''
+    MAIL_DEFAULT_SENDER = ('bdwms', MAIL_USERNAME)
 
-    # BDWMS_BLOG_EMAIL = os.getenv('BDWMS_BLOG_EMAIL')  # 邮箱地址
+    BDWMS_BLOG_EMAIL = os.getenv('BDWMS_BLOG_EMAIL')  # 管理员邮箱地址
     BDWMS_BLOG_POST_PER_PAGE = 10  # 每页文章数量
     BDWMS_BLOG_MANAGE_POST_PER_PAGE = 15
     BDWMS_BLOG_COMMENT_PER_PAGE = 15  # 评论数目

@@ -3,15 +3,14 @@ import os
 import click
 from flask import Flask, render_template
 from flask_wtf.csrf import CSRFError
+from flask_login import current_user
 
 from bdwms_blog.blueprints.admin import admin_bp
 from bdwms_blog.blueprints.auth import auth_bp
 from bdwms_blog.blueprints.blog import blog_bp
-from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment
-from bdwms_blog.models import Admin, Post, Category, Link
+from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment, mail
+from bdwms_blog.models import Admin, Post, Category, Link, Comment
 from bdwms_blog.settings import config
-
-# from flask_login import current_user 评论相关，未实现
 
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
@@ -45,6 +44,7 @@ def register_extensions(app):  # 分离拓展的实例化与初始化，因为�
     moment.init_app(app)
     login_manager.init_app(app)
     ckeditor.init_app(app)
+    mail.init_app(app)
 
 
 def register_template_context(app):  # 添加模板上下文,这里没写完评论
@@ -53,15 +53,19 @@ def register_template_context(app):  # 添加模板上下文,这里没写完评�
         admin = Admin.query.first()
         categories = Category.query.order_by(Category.name).all()
         links = Link.query.order_by(Link.name).all()
+        if current_user.is_authenticated:  # 如果当前用户已经登录，就展示未审核的评论数量在base.html
+            unread_comments = Comment.query.filter_by(reviewed=False).count()
+        else:
+            unread_comments = None
         return dict(
             admin=admin, categories=categories,
-            links=links)
+            links=links, unread_comments=unread_comments)
 
 
 def register_shell_context(app):  # 注册shell上下文处理函数
     @app.shell_context_processor
     def make_shell_context():
-        return dict(db=db, Admin=Admin, Post=Post, Category=Category)
+        return dict(db=db, Admin=Admin, Post=Post, Category=Category, Comment=Comment)
 
 
 def register_commands(app):

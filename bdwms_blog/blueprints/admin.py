@@ -9,7 +9,7 @@ from flask_ckeditor import upload_success, upload_fail
 
 from bdwms_blog.extensions import db
 from bdwms_blog.forms import SettingForm, PostForm, CategoryForm, LinkForm
-from bdwms_blog.models import Post, Category, Link
+from bdwms_blog.models import Post, Category, Link, Comment
 from bdwms_blog.utils import redirect_back, allowed_file
 
 admin_bp = Blueprint('admin', __name__)
@@ -87,6 +87,59 @@ def delete_post(post_id):
     db.session.delete(post)
     db.session.commit()
     flash('文章已删除.', 'success')
+    return redirect_back()
+
+
+@admin_bp.route('/post/<int:post_id>/set-comment', methods=['POST'])  # 设置评论的开启和关闭，在post.html中
+@login_required
+def set_comment(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.can_comment:
+        post.can_comment = False
+        flash('评论已关闭', 'success')
+    else:
+        post.can_comment = True
+        flash('评论已打开', 'success')
+    db.session.commit()
+    return redirect_back()
+
+
+@admin_bp.route('/comment/manage')
+@login_required
+def manage_comment():
+    """评论分类管理，总共，未读，来自管理员"""
+    filter_rule = request.args.get('filter', 'all')
+    page = request.args.get('page', 1, type=int)
+    per_page = current_app.config['BDWMS_BLOG_COMMENT_PER_PAGE']
+    if filter_rule == 'unread':
+        filtered_comments = Comment.query.filter_by(reviewed=False)
+    elif filter_rule == 'admin':
+        filtered_comments = Comment.query.filter_by(from_admin=True)
+    else:
+        filtered_comments = Comment.query
+
+    pagination = filtered_comments.order_by(Comment.timestamp.desc()).paginate(page, per_page=per_page)
+    comments = pagination.items
+    return render_template('admin/manage_comment.html', comments=comments, pagination=pagination)
+
+
+@admin_bp.route('/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    db.session.delete(comment)
+    db.session.commit()
+    flash('评论已删除', 'success')
+    return redirect_back()
+
+
+@admin_bp.route('/comment/<int:comment_id>/approve', methods=['POST'])
+@login_required
+def approve_comment(comment_id):
+    comment = Comment.query.get_or_404(comment_id)
+    comment.reviewed = True
+    db.session.commit()
+    flash('评论成功', 'success')
     return redirect_back()
 
 

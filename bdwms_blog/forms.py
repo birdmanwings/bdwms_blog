@@ -22,7 +22,7 @@ class PostForm(FlaskForm):
     body = CKEditorField('Body', validators=[DataRequired()])  # 使用CKEditorField这个类来加载
     submit = SubmitField()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):  # 初始化时将目录导入
         super(PostForm, self).__init__(*args, **kwargs)
         self.category.choices = [(category.id, category.name) for category in
                                  Category.query.order_by(Category.name).all()]
@@ -52,3 +52,19 @@ class LinkForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired(), Length(1, 30)])
     url = StringField('URL', validators=[DataRequired(), URL(), Length(1, 255)])
     submit = SubmitField()
+
+
+class CommentForm(FlaskForm):
+    """评论表单"""
+    author = StringField('Name', validators=[DataRequired(), Length(1, 30)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(1, 254)])  # Email()检验邮件校验
+    site = StringField('Site', validators=[Optional(), URL(), Length(0, 255)])  # Optional()设置可为空，URL()检验是否为有效的URL
+    body = TextAreaField('Comment', validators=[DataRequired()])
+    submit = SubmitField()
+
+
+class AdminCommentForm(CommentForm):
+    """管理员评论表单"""
+    author = HiddenField()
+    email = HiddenField()
+    site = HiddenField()
