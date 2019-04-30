@@ -29,7 +29,7 @@ def login():
                 return redirect_back()
             flash('无效的用户名或者密码', 'warning')
         else:
-            flash('账户', 'warning')
+            flash('账户不存在', 'warning')
     return render_template('auth/login.html', form=form)
 
 

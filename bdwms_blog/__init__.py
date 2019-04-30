@@ -1,14 +1,16 @@
 import os
-
+import logging
 import click
-from flask import Flask, render_template
+
+from logging.handlers import SMTPHandler, RotatingFileHandler
+from flask import Flask, render_template, request
 from flask_wtf.csrf import CSRFError
 from flask_login import current_user
 
 from bdwms_blog.blueprints.admin import admin_bp
 from bdwms_blog.blueprints.auth import auth_bp
 from bdwms_blog.blueprints.blog import blog_bp
-from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment, mail
+from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment, mail, migrate, toolbar
 from bdwms_blog.models import Admin, Post, Category, Link, Comment
 from bdwms_blog.settings import config
 
@@ -28,7 +30,44 @@ def create_app(config_name=None):
     register_errors(app)
     register_commands(app)
     register_shell_context(app)
+    register_logging(app)
     return app
+
+
+def register_logging(app):
+    """自定义一个日志类，文件循环存储进行记录"""
+
+    class RequestFormatter(logging.Formatter):
+        def format(self, record):
+            record.url = request.url
+            record.remote_addr = request.remote_addr
+            return super(RequestFormatter, self).format(record)
+
+    request_formatter = RequestFormatter(
+        '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
+        '%(levelname)s in %(module)s: %(message)s'
+    )
+
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bdwms_blog.log'),
+                                       maxBytes=10 * 1024 * 1024, backupCount=10)
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)  # INFO级别
+
+    """邮件日志处理器"""
+    mail_handler = SMTPHandler(
+        mailhost=app.config['MAIL_SERVER'],
+        fromaddr=app.config['MAIL_USERNAME'],
+        toaddrs=['ADMIN_EMAIL'],
+        subject='BDWMS_BLOG Application Error',
+        credentials=(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD']))
+    mail_handler.setLevel(logging.ERROR)  # ERROR级别
+    mail_handler.setFormatter(request_formatter)
+
+    if not app.debug:
+        app.logger.addHandler(mail_handler)
+        app.logger.addHandler(file_handler)
 
 
 def register_blueprints(app):
@@ -45,6 +84,8 @@ def register_extensions(app):  # 分离拓展的实例化与初始化，因为�
     login_manager.init_app(app)
     ckeditor.init_app(app)
     mail.init_app(app)
+    toolbar.init_app(app)
+    migrate.init_app(app, db)
 
 
 def register_template_context(app):  # 添加模板上下文,这里没写完评论
