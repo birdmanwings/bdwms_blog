@@ -13,7 +13,7 @@ else:
 
 class BaseConfig(object):
     '''注意配置文件必须大写！！！！！！！'''
-    SECRET_KEY = os.getenv('SECRET_KEEY', 'dev key')  # 加密相关使用的秘钥，这里还只是开发时使用
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev key')  # 加密相关使用的秘钥，这里还只是开发时使用
 
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
