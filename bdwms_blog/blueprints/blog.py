@@ -76,7 +76,7 @@ def show_post(post_id):
             send_new_reply_email(replied_comment)  # 发送回复给被评论者
         db.session.add(comment)
         db.session.commit()
-        if current_user.is_authenticated:
+        if current_user.is_authenticated:  # 如果用户已经登录直接显示评论成功
             flash('评论成功', 'success')
         else:
             flash('你的评论将在通过审核后显示', 'info')
