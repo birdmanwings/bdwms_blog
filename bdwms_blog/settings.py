@@ -47,6 +47,7 @@ class BaseConfig(object):
 
 class DevelopmentConfig(BaseConfig):
     '''开发数据库路径'''
+    CACHE_TYPE = 'redis'
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(basedir, 'data-dev.db')
 
 
@@ -59,7 +60,8 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     '''生产配置'''
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', prefix + os.path.join(basedir, 'data.db'))
+    CACHE_TYPE = 'simple'  # 设置缓存类型
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', prefix + os.path.join(basedir, 'data.db'))  # 生产环境使用设定的数据库
 
 
 config = {

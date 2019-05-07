@@ -4,10 +4,10 @@
 import os
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request, current_app, send_from_directory
-from flask_login import login_required, current_user
 from flask_ckeditor import upload_success, upload_fail
+from flask_login import login_required, current_user
 
-from bdwms_blog.extensions import db
+from bdwms_blog.extensions import db, cache
 from bdwms_blog.forms import SettingForm, PostForm, CategoryForm, LinkForm
 from bdwms_blog.models import Post, Category, Link, Comment
 from bdwms_blog.utils import redirect_back, allowed_file
@@ -18,6 +18,7 @@ admin_bp = Blueprint('admin', __name__)
 @admin_bp.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+    cache.delete('view/%s' % url_for('blog.about'))  # 当更新时我们需要清除缓存
     form = SettingForm()
     if form.validate_on_submit():
         current_user.name = form.name.data
@@ -65,6 +66,7 @@ def new_post():
 @admin_bp.route('/post/<int:post_id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_post(post_id):
+    cache.delete('view/post/{}'.format(post_id))
     form = PostForm()
     post = Post.query.get_or_404(post_id)
     if form.validate_on_submit():
@@ -83,6 +85,7 @@ def edit_post(post_id):
 @admin_bp.route('/post/<int:post_id>/delete', methods=['POST'])
 @login_required
 def delete_post(post_id):
+    cache.delete('view/post/{}'.format(post_id))
     post = Post.query.get_or_404(post_id)
     db.session.delete(post)
     db.session.commit()
@@ -93,6 +96,7 @@ def delete_post(post_id):
 @admin_bp.route('/post/<int:post_id>/set-comment', methods=['POST'])  # 设置评论的开启和关闭，在post.html中
 @login_required
 def set_comment(post_id):
+    cache.delete('view/post/{}'.format(post_id))
     post = Post.query.get_or_404(post_id)
     if post.can_comment:
         post.can_comment = False
@@ -210,7 +214,7 @@ def new_link():
         link = Link(name=name, url=url)
         db.session.add(link)
         db.session.commit()
-        flash('Link created.', 'success')
+        flash('链接已创建', 'success')
         return redirect(url_for('.manage_link'))
     return render_template('admin/new_link.html', form=form)
 
@@ -224,7 +228,7 @@ def edit_link(link_id):
         link.name = form.name.data
         link.url = form.url.data
         db.session.commit()
-        flash('Link updated.', 'success')
+        flash('链接已更新', 'success')
         return redirect(url_for('.manage_link'))
     form.name.data = link.name
     form.url.data = link.url
@@ -237,7 +241,7 @@ def delete_link(link_id):
     link = Link.query.get_or_404(link_id)
     db.session.delete(link)
     db.session.commit()
-    flash('Link deleted.', 'success')
+    flash('链接已删除', 'success')
     return redirect(url_for('.manage_link'))
 
 

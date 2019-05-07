@@ -7,6 +7,7 @@ from flask_ckeditor import CKEditor
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_debugtoolbar import DebugToolbarExtension
+from flask_caching import Cache
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
@@ -16,7 +17,8 @@ moment = Moment()
 ckeditor = CKEditor()
 mail = Mail()
 migrate = Migrate()
-toolbar=DebugToolbarExtension()
+toolbar = DebugToolbarExtension()
+cache = Cache()
 
 
 @login_manager.user_loader

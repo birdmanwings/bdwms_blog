@@ -10,7 +10,7 @@ from flask_login import current_user
 from bdwms_blog.blueprints.admin import admin_bp
 from bdwms_blog.blueprints.auth import auth_bp
 from bdwms_blog.blueprints.blog import blog_bp
-from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment, mail, migrate, toolbar
+from bdwms_blog.extensions import bootstrap, db, login_manager, csrf, ckeditor, moment, mail, migrate, toolbar, cache
 from bdwms_blog.models import Admin, Post, Category, Link, Comment
 from bdwms_blog.settings import config
 
@@ -26,7 +26,7 @@ def create_app(config_name=None):
 
     register_blueprints(app)  # 注册蓝图
     register_extensions(app)  # 注册拓展
-    register_template_context(app)
+    register_template_context(app)  # 注册模板上下文
     register_errors(app)
     register_commands(app)
     register_shell_context(app)
@@ -86,6 +86,7 @@ def register_extensions(app):  # 分离拓展的实例化与初始化，因为�
     mail.init_app(app)
     toolbar.init_app(app)
     migrate.init_app(app, db)
+    cache.init_app(app)
 
 
 def register_template_context(app):  # 添加模板上下文,这里没写完评论

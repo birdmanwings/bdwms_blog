@@ -6,7 +6,7 @@ from flask import render_template, flash, redirect, url_for, request, current_ap
 from flask_login import current_user
 
 from bdwms_blog.emails import send_new_comment_email, send_new_reply_email
-from bdwms_blog.extensions import db
+from bdwms_blog.extensions import db, cache
 from bdwms_blog.models import Post, Category, Comment
 from bdwms_blog.utils import redirect_back
 from bdwms_blog.forms import CommentForm, AdminCommentForm
@@ -24,6 +24,7 @@ def index():
 
 
 @blog_bp.route('/about')
+@cache.cached(timeout=5 * 60)
 def about():
     return render_template('blog/about.html')
 
@@ -39,6 +40,7 @@ def show_category(category_id):
 
 
 @blog_bp.route('/post/<int:post_id>', methods=['GET', 'POST'])
+@cache.cached(timeout=5 * 60)
 def show_post(post_id):
     post = Post.query.get_or_404(post_id)
 
