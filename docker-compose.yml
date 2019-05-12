@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    env_file: .env
+    container_name: web
+    restart: always
+    volumxes:
+      - ./:/app
+    depends_on:
+      - db
+    networks:
+      - net
+    command: gunicorn -w 4 wsgi:app
+
+  db:
+    container_name: db
+    restart: always
+    networks:
+      - net
+    image: mysql:5.7
+    env_file: .env
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    command: --character-set-server=utf8
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    networks:
+      - net
+    depends_on:
+      - web
+    volumes:
+      - ./nginx/log:/var/log/nginx
+      - ./bdwms_blog/static:/opt/static
+    ports:
+      - "80:80"
+
+  redis:
+    image: redis:3.2
+    restart: always
+    volumes:
+      - ./redis:/redis
+    networks:
+      - net
+
+networks:
+  net:
