@@ -1,4 +1,4 @@
 FROM nginx:1.13.12
 
-RUN rm /etc/nginx/sites-enabled/default
-COPY bdwms_blog /etc/nginx/sites-enabled/
+RUN rm /etc/nginx/conf.d/default.conf
+COPY bdwms_blog.conf /etc/nginx/conf.d/bdwms_blog.conf

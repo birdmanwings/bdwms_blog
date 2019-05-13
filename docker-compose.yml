@@ -36,7 +36,7 @@ services:
       - web
     volumes:
       - ./nginx/log:/var/log/nginx
-      - ./bdwms_blog/static:/opt/static
+      - ./bdwms_blog.conf/static:/opt/static
     ports:
       - "80:80"
 
