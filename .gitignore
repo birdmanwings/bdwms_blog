@@ -4,7 +4,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+*.key
+*.pem
 # C extensions
 *.so
 
@@ -114,4 +115,9 @@ out
 gen
 将删除 bdwms_blog/templates/admin/manage_comment.html
 将删除 data-dev.db
-.idea
+将删除 migrations/README
+将删除 migrations/alembic.ini
+将删除 migrations/env.py
+将删除 migrations/script.py.mako
+将删除 migrations/versions/
+将删除 nginx/cert/
