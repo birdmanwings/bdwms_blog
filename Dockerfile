@@ -4,7 +4,7 @@
 FROM python:3.6.5
 
 # -- Install dependencies
-RUN pip install --upgrade pipenv
+RUN pip3 install --upgrade pipenv
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
