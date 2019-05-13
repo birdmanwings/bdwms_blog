@@ -21,7 +21,7 @@ def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
-    app = Flask('bdwms_blog.conf')
+    app = Flask('bdwms_blog')
     app.config.from_object(config[config_name])  # 导入配置
 
     register_blueprints(app)  # 注册蓝图
@@ -50,7 +50,7 @@ def register_logging(app):
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bdwms_blog.conf.log'),
+    file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bdwms_blog.log'),
                                        maxBytes=10 * 1024 * 1024, backupCount=10)
     file_handler.setFormatter(formatter)
     file_handler.setLevel(logging.INFO)  # INFO级别
