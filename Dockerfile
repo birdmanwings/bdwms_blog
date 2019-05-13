@@ -11,8 +11,8 @@ ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 
 # Application
-RUN mkdir /app
-WORKDIR /app
+RUN mkdir /bdwms_blog
+WORKDIR /bdwms_blog
 COPY Pipfile Pipfile
 COPY Pipfile.lock Pipfile.lock
 
