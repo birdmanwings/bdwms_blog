@@ -4,7 +4,8 @@
 FROM python:3.6.5
 
 # -- Install dependencies
-RUN pip3 install --upgrade pipenv
+ENV PIP_INDEX_URL https://mirrors.aliyun.com/pypi/simple/
+RUN pip3 install pipenv --no-cache-dir
 
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
