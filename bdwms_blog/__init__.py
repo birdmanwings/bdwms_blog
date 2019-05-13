@@ -89,7 +89,7 @@ def register_extensions(app):  # 分离拓展的实例化与初始化，因为�
     cache.init_app(app)
 
 
-def register_template_context(app):  # 添加模板上下文,这里没写完评论
+def register_template_context(app):  # 添加模板上下文
     @app.context_processor
     def make_template_context():
         admin = Admin.query.first()
