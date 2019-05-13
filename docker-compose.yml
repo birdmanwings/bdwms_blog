@@ -6,7 +6,7 @@ services:
     env_file: .env
     container_name: web
     restart: always
-    volumxes:
+    volumes:
       - ./:/app
     depends_on:
       - db
