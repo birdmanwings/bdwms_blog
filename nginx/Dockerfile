@@ -5,5 +5,5 @@ COPY bdwms_blog.conf /etc/nginx/conf.d/bdwms_blog.conf
 
 RUN mkdir /etc/nginx/cert
 WORKDIR /etc/nginx/cert
-COPY cert/birdmanwings.key birdmanwings.key
-COPY cert/birdmanwings.pem birdmanwings.pem
+COPY cert/1888125_birdmanwings.com.pem 1888125_birdmanwings.com.pem
+COPY cert/1888125_birdmanwings.com.key 1888125_birdmanwings.com.key
