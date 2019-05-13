@@ -7,7 +7,7 @@ services:
     container_name: web
     restart: always
     volumes:
-      - ./:/app
+      - ./:/bdwms_blog
     depends_on:
       - db
     networks:
