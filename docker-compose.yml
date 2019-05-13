@@ -12,8 +12,6 @@ services:
       - db
     networks:
       - net
-    ports:
-      - "8000:8000"
     command: bash ./start_server.sh
 
   db:
